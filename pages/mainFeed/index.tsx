@@ -23,7 +23,7 @@ const MainFeed: NextPage = () => {
                 .from("personalfinance")
                 .select("*")
                 .limit(10)
-            console.log(data);
+           console.log(data);
             if(data != null) {
                 setFinances(data);
             }

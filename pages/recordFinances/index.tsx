@@ -10,6 +10,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
+
+
 const RecordFinances: NextPage = () => {
   const user = useUser();
   const router = useRouter();
@@ -21,24 +23,37 @@ const RecordFinances: NextPage = () => {
     amount: "",
     account_balance: "",
   };
-
-  const [financeData, setFinanceData] = useState(initialState);
-
+  
+  
+   const [financeData, setFinanceData] = useState(initialState);
+   const [error, setError] = useState<any>(null)
+   const [transactionsData, setTransactionsData] = useState <any>([]); // keep track of data from supabase - put this kwaukuisa ma use state
+   let balance = getBalance(transactionsData)
+   balance = parseFloat(balance.toFixed(2))
   const handleChange = (e: any) => {
     setFinanceData({ ...financeData, [e.target.name]: e.target.value });
   };
 
   const recordFinances = async () => {
+    setError(null)
     try {
-      const { data, error } = await supabaseClient
+     
+     let amount =parseFloat(financeData.amount)
+     let category = financeData.category
+      if ( (category === 'expenses' && amount <= balance)   || category === 'incomes' ){
+
+
+
+        const { data, error } = await supabaseClient
+         
         .from("personalfinance")
         .insert([
           {
+            account_balance:  category === 'expenses' ? balance-amount   : balance + amount, // put it paukusenda data ku supabase
             transaction_date: financeData.transaction_date,
             transaction: financeData.transaction,
-            category: financeData.category,
-            amount: financeData.amount,
-            account_balance: financeData.account_balance,
+            category: category,
+            amount: amount,
             user_email: user?.email?.toLowerCase(),
             user_id: user?.id,
           },
@@ -46,66 +61,74 @@ const RecordFinances: NextPage = () => {
         .single();
       if (error) throw error;
       setFinanceData(initialState);
+      console.log("pushing to mainFeed")
       router.push("/mainFeed");
+      }else{
+        setError('amount cannot exceed balance')
+        console.log(error)
+        return
+      }
+      
+      
     } catch (error: any) {
       alert(error.message);
     }
   };
 
   const fetchTransactions = async () => {
-    const { data, error } = await supabaseClient
+    try {
+      const { data, error } = await supabaseClient
       .from("personalfinance")
       .select("amount,category");
     if (error) {
       console.error(error);
       return;
+    } setTransactionsData(data)
+     // console.log(data)
+    } catch (error) {
+      console.log(error)
+      
     }
 
-    if (data) {
-      //filter expenses and incomes
-      const expenses = data.filter((transaction) => transaction.category === "expenses");
-      const incomes = data.filter((transaction) => transaction.category === "incomes");
-      // Calculate total expenses and map amounts
-      // Calculate total incomes and map amounts
-      const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
-      const totalIncomes = incomes.reduce((total, income) => total + income.amount, 0);
+  
 
-      const balance = totalIncomes - totalExpenses;
-
-      console.log(`Account_balance: ${balance}`);
-    }
   };
 
-  const accountBalance = (payload: any) => {
-    const { new: newTransaction } = payload;
-    setFinanceData((prevData) => ({
-      ...prevData,
-      account_balance: (parseFloat(prevData.account_balance) + parseFloat(newTransaction.amount)).toString(),
-    }));
-    return (parseFloat(financeData.account_balance) + parseFloat(newTransaction.amount)).toString();
-  };
 
-  useEffect(() => {
-    const channel = supabaseClient
-      .channel('personalfinance')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'personalfinance' }, (payload) => {
-        const newBalance = accountBalance(payload);
-        if (document.getElementById("account-balance")) {
-          document.getElementById("account-balance")!.innerHTML = newBalance;
-        }
-      })
-      .subscribe();
 
-    return () => {
-      supabaseClient.removeChannel(channel);
-    };
-  }, []);
+function getBalance(transactionsdata: any[]) { //use data from supabase
+  const expenseData = transactionsdata.filter((transaction) => transaction.category === 'expenses'); //get all exp
+  const incomeData = transactionsdata.filter((transaction) => transaction.category === 'incomes'); // get all income
 
-  console.log(financeData);
+  const totalExpenses = expenseData.reduce((acc, current) => acc + parseFloat(current.amount.replace('$', '').replace(',' , '')), 0); // start w total iri 0 ,
+//per array item in expenses remove dollar sign
+//add value to  the current total
+  const totalIncomes = incomeData.reduce((acc, current) => acc + parseFloat(current.amount.replace('$', '').replace(',' , '')), 0);
+
+  const balance = totalIncomes - totalExpenses;
+  return parseFloat(balance.toFixed(2))
+
+
+}
+
+useEffect(() => {
+  fetchTransactions();
+}, []);
+ 
+
+ // console.log(financeData);
 
   return (
     <Grid.Container>
-      <Text h3>Transaction-date</Text>
+      { error && <Grid xs={10}>
+
+        <h2>
+        {error}
+        </h2>
+
+
+      </Grid>}
+      <Text className="mt-10" h3>Transaction-date</Text>
       <Grid xs={12}>
         <Textarea
           name="transaction_date"
@@ -158,15 +181,16 @@ const RecordFinances: NextPage = () => {
       </Grid>
       <Text h3 id="account-balance">Account-balance</Text>
       <Grid xs={12}>
-        <Textarea
-          name="account_balance"
-          aria-label="account_balance"
-          placeholder="Account-balance"
-          fullWidth
-          rows={1}
-          size="xl"
-          onChange={handleChange}
-        />
+      <h2 className="text-3xl">
+            
+           ${
+              
+              balance
+            }
+
+
+      </h2>
+        
       </Grid>
       <Grid xs={12}>
         <Text>Posting as {user?.email}</Text>

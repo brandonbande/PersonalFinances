@@ -24,6 +24,8 @@ const FinanceCard: NextPage<Props> = (props) =>{
 
 
 
+
+
     return(
         <Card
         isPressable
@@ -32,6 +34,7 @@ const FinanceCard: NextPage<Props> = (props) =>{
         >
         <Card.Body>
             <Text h2>{finance.transaction}</Text>
+            
 
             <Text b>posted</Text>
             <Text b>By {finance.user_email.toLowerCase ()}</Text>
