@@ -27,7 +27,7 @@ const RecordFinances: NextPage = () => {
   
    const [financeData, setFinanceData] = useState(initialState);
    const [error, setError] = useState<any>(null)
-   const [transactionsData, setTransactionsData] = useState <any>([]); // keep track of data from supabase - put this kwaukuisa ma use state
+   const [transactionsData, setTransactionsData] = useState <any>([]); // keep track of data from supabase 
    let balance = getBalance(transactionsData)
    balance = parseFloat(balance.toFixed(2))
   const handleChange = (e: any) => {
