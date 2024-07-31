@@ -35,11 +35,19 @@ const RecordFinances: NextPage = () => {
   };
 
   const recordFinances = async () => {
+    
     setError(null)
+    let amount =parseFloat(financeData.amount)
+    let category = financeData.category
+    if (category === "" || category === null) {
+      setError('Category cannot be null')
+      return
+    }
+    
+
     try {
      
-     let amount =parseFloat(financeData.amount)
-     let category = financeData.category
+   
       if ( (category === 'expenses' && amount <= balance)   || category === 'incomes' ){
 
 
@@ -64,7 +72,7 @@ const RecordFinances: NextPage = () => {
       console.log("pushing to mainFeed")
       router.push("/mainFeed");
       }else{
-        setError('insuffient funds')
+        setError('Insuffient funds')
         console.log(error)
         return
       }
@@ -122,9 +130,9 @@ useEffect(() => {
     <Grid.Container>
       { error && <Grid xs={10}>
 
-        <h2>
+        <h3>
         {error}
-        </h2>
+        </h3>
 
 
       </Grid>}
@@ -162,8 +170,10 @@ useEffect(() => {
      
       
         <select  name="category" onChange={handleChange}>
+          <option value="null">Null</option>
           <option value="expenses">Expenses</option>
           <option value="incomes">Incomes</option>
+          
         </select>
          
           
