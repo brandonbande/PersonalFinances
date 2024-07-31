@@ -128,12 +128,12 @@ useEffect(() => {
 
 
       </Grid>}
-      <Text className="mt-10" h3>Transaction-date</Text>
+      <Text className="mt-10" h3>Transaction Date</Text>
       <Grid xs={12}>
         <Textarea
           name="transaction_date"
           aria-label="transaction_date"
-          placeholder="Transaction-date"
+          placeholder="Transaction Date"
           fullWidth
           rows={1}
           size="xl"
@@ -147,7 +147,7 @@ useEffect(() => {
         <Textarea
           name="transaction"
           aria-label="transaction"
-          placeholder="enter the transaction"
+          placeholder="Enter the transaction"
           fullWidth
           rows={2}
           size="xl"
@@ -172,20 +172,20 @@ useEffect(() => {
         <Textarea
           name="amount"
           aria-label="amount"
-          placeholder="enter amount"
+          placeholder="Enter amount"
           fullWidth
           rows={1}
           size="xl"
           onChange={handleChange}
         />
       </Grid>
-      <Text h3 id="account-balance">Account-balance</Text>
+      <Text h3 id="Account Balance">Account Balance</Text>
       <Grid xs={12}>
       <h2 className="text-3xl">
             
            ${
               
-              balance
+              balance.toFixed(2)
             }
 
 
