@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
-import { Text, Textarea, Grid, Button } from "@nextui-org/react";
+import { Text, Textarea, Grid, Button, Input } from "@nextui-org/react";
 import { withPageAuth } from "@supabase/auth-helpers-nextjs";
 import { useState, ChangeEvent, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -49,7 +49,7 @@ const RecordFinances: NextPage = () => {
         .from("personalfinance")
         .insert([
           {
-            account_balance:  category === 'expenses' ? balance-amount   : balance + amount, // put it paukusenda data ku supabase
+            account_balance:  category === 'expenses' ? balance-amount   : balance + amount, //paukusenda data ku supabase
             transaction_date: financeData.transaction_date,
             transaction: financeData.transaction,
             category: category,
@@ -64,7 +64,7 @@ const RecordFinances: NextPage = () => {
       console.log("pushing to mainFeed")
       router.push("/mainFeed");
       }else{
-        setError('amount cannot exceed balance')
+        setError('insuffient funds')
         console.log(error)
         return
       }
@@ -144,28 +144,31 @@ useEffect(() => {
       </Grid>
       <Text h3>Transaction</Text>
       <Grid xs={12}>
-        <Textarea
+        
+      <Textarea
+       
           name="transaction"
           aria-label="transaction"
-          placeholder="Enter the transaction"
+          placeholder="Enter the transaction "
           fullWidth
-          rows={2}
+          rows={1}
           size="xl"
           onChange={handleChange}
-          
-        />
+       />   
       </Grid>
       <Text h3>Category</Text>
       <Grid xs={12}>
-        <Textarea
-          name="category"
-          aria-label="category"
-          placeholder="Either expenses or incomes"
-          fullWidth
-          rows={2}
-          size="xl"
-          onChange={handleChange}
-        />
+      
+     
+      
+        <select  name="category" onChange={handleChange}>
+          <option value="expenses">Expenses</option>
+          <option value="incomes">Incomes</option>
+        </select>
+         
+          
+     
+      
       </Grid>
       <Text h3>Amount</Text>
       <Grid xs={12}>

@@ -52,7 +52,7 @@ const Finance: NextPage = () => {
                 {finance.account_balance}
             </Text>
             <Spacer y={1} />
-            <Text size="$lg">
+            <Text h1 size="$lg">
                 {finance.transaction}
             </Text>
            
