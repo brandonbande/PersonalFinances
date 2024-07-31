@@ -108,23 +108,17 @@ return(
         />
        </Grid>
        <Text h3>Category</Text>
-        <Textarea
+       <Grid xs ={12}>
+       <select  name="category" onChange={handleChange}>
+          <option value="null">Null</option>
+          <option value="expenses">Expenses</option>
+          <option value="incomes">Incomes</option>
+          
+        </select>
          
-         name="category"
-         aria-label="category"
-         placeholder="Either expenses or incomes"
-         fullWidth={true}
-         rows={2}
-         size="xl"
-         onChange={handleChange}
-         initialValue={financeData.category}
-       
-       
-       />
-        
         
        
-        <Grid xs ={12}>
+        
         
         </Grid>
        <Text h3>Amount</Text>
