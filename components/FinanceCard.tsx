@@ -33,9 +33,11 @@ const FinanceCard: NextPage<Props> = (props) =>{
         onPress= {() =>router.push("/finance?id=" + finance.id)}
         >
         <Card.Body>
+            <Text h4 css = {{textAlign:'right'}}>{finance.amount}</Text>
+
             <Text h2>{finance.transaction}</Text>
             
-
+               
             <Text b>posted</Text>
             <Text b>By {finance.user_email.toLowerCase ()}</Text>
         </Card.Body>

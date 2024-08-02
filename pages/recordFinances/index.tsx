@@ -138,16 +138,10 @@ useEffect(() => {
       </Grid>}
       <Text className="mt-10" h3>Transaction Date</Text>
       <Grid xs={12}>
-        <Textarea
+        <input
           name="transaction_date"
-          aria-label="transaction_date"
-          placeholder="Transaction Date"
-          fullWidth
-          rows={1}
-          size="xl"
-          onChange={handleChange}
-          
-          
+          type="date"
+          onChange={handleChange}  
         />
       </Grid>
       <Text h3>Transaction</Text>
@@ -170,7 +164,7 @@ useEffect(() => {
      
       
         <select  name="category" onChange={handleChange}>
-          <option value="null">Null</option>
+          <option></option>
           <option value="expenses">Expenses</option>
           <option value="incomes">Incomes</option>
           

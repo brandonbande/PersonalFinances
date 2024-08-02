@@ -5,6 +5,7 @@ import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
 import { useState, useEffect } from "react";
 import {Text} from "@nextui-org/react";
 import FinanceCard from "../../components/FinanceCard"
+import  balance from '../../pages/recordFinances'
 
 
 const MainFeed: NextPage = () => {
@@ -42,7 +43,16 @@ const MainFeed: NextPage = () => {
     */
     return (
         <>
-            <Text h2>Main Feed</Text>
+            <Text h2>Main  Feed </Text>
+            <h2 className="text-3xl">
+            
+            ${
+               
+               Number(balance).toFixed(2)
+             }
+ 
+ 
+       </h2>
             <Text size="$lg" css={{my: "$8"}}>
                 Check out incomes and expenses from here
             </Text>

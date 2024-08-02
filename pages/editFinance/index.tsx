@@ -77,18 +77,13 @@ const editFinance:NextPage = () => {
 return(
       <Grid.Container>
    
-       <Text h3>Transaction-date</Text>
-       <Grid xs ={12}>
-        <Textarea
+      <Text className="mt-10" h3>Transaction Date</Text>
+      <Grid xs={12}>
+        <input
           name="transaction_date"
-          aria-label="transaction_date"
-          placeholder="Transaction-date"
-          fullWidth={true}
-          rows={1}
-          size="xl"
+          type="date"
           onChange={handleChange}
-          initialValue={financeData.transaction_date}
-        
+          value={financeData.transaction_date}
         
         />
        </Grid>
@@ -107,16 +102,17 @@ return(
         
         />
        </Grid>
-       <Text h3>Category</Text>
+       <Text h3  >Category</Text>
        <Grid xs ={12}>
-       <select  name="category" onChange={handleChange}>
-          <option value="null">Null</option>
+        
+       <select  name="category" onChange={handleChange} value={financeData.category}>
+          <option></option>
           <option value="expenses">Expenses</option>
           <option value="incomes">Incomes</option>
           
         </select>
          
-        
+       
        
         
         
