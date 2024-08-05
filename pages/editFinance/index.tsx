@@ -5,7 +5,6 @@ import { Text, Textarea, Grid, Button} from "@nextui-org/react"
 import { withPageAuth } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect} from "react";
 
-
 const editFinance:NextPage = () => {
     const supabaseClient = useSupabaseClient();
     const user = useUser();
@@ -20,12 +19,26 @@ const editFinance:NextPage = () => {
         account_balance:""
     }
     const [financeData, setFinanceData] = useState (initialState);
+    const [transactionsData, setTransactionsData] = useState <any>([]); // keep track of data from supabase 
+    const balance = getBalance(transactionsData) 
     
     const handleChange = (e: any) =>{
             setFinanceData({...financeData, [e.target.name] : e.target.value })
 
     }
+    function getBalance(transactionsdata: any[]) { //use data from supabase
+        const expenseData = transactionsdata.filter((transaction) => transaction.category === 'expenses'); //get all exp
+        const incomeData = transactionsdata.filter((transaction) => transaction.category === 'incomes'); // get all income
+      
+        const totalExpenses = expenseData.reduce((acc, current) => acc + parseFloat(current.amount.replace('$', '').replace(',' , '')), 0); // start w total iri 0 ,
+      //per array item in expenses remove dollar sign
+      //add value to  the current total
+        const totalIncomes = incomeData.reduce((acc, current) => acc + parseFloat(current.amount.replace('$', '').replace(',' , '')), 0);
+      
+        const balance = totalIncomes - totalExpenses;
+        return parseFloat(balance.toFixed(2))
 
+}
     useEffect( () => {
         async function getFinance() {
             const {data, error} = await supabaseClient
@@ -67,13 +80,13 @@ const editFinance:NextPage = () => {
         alert(error.message);
        }
 
-
     }
 
 
 
+   // console.log(financeData);
 
-    console.log(financeData);
+    
 return(
       <Grid.Container>
    
@@ -134,22 +147,19 @@ return(
         
         />
        </Grid>
-       <Text h3>Account-balance</Text>
-       <Grid xs ={12}>
-        <Textarea
-          name="account_balance"
-          aria-label="account-balance"
-          placeholder="Account-balance"
-          fullWidth={true}
-          rows={1}
-          size="xl"
-          onChange={handleChange}
-          initialValue={financeData.account_balance}
-      
+       <Text h3 id="Account Balance">Account Balance</Text>
+      <Grid xs={12}>
+      <h2 className="text-3xl">
+            
+          
+          
+              
+              ${balance.toFixed(2) }
+            
+  
+      </h2>
         
-        
-        />
-       </Grid>
+      </Grid>
         
         
        
@@ -158,11 +168,9 @@ return(
           Editing as {user?.email}
            </Text>
 
-
        </Grid>
        <Button onPress={editFinance}>Update Finance</Button>
        
-
 
       </Grid.Container>
 )
@@ -170,3 +178,4 @@ return(
 }
 export default editFinance;
 export const getServerSideProps = withPageAuth({ redirectTo: "/login"});
+

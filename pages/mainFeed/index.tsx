@@ -5,7 +5,7 @@ import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
 import { useState, useEffect } from "react";
 import {Text} from "@nextui-org/react";
 import FinanceCard from "../../components/FinanceCard"
-import  balance from '../../pages/recordFinances'
+
 
 
 const MainFeed: NextPage = () => {
@@ -13,8 +13,22 @@ const MainFeed: NextPage = () => {
     const user = useUser();
     const router = useRouter();
     const [finances, setFinances] = useState<string[]>([]);
+    
+function getBalance(transactionsdata: any[]) { //use data from supabase
+        const expenseData = transactionsdata.filter((transaction) => transaction.category === 'expenses'); //get all exp
+        const incomeData = transactionsdata.filter((transaction) => transaction.category === 'incomes'); // get all income
+      
+        const totalExpenses = expenseData.reduce((acc, current) => acc + parseFloat(current.amount.replace('$', '').replace(',' , '')), 0); // start w total iri 0 ,
+      //per array item in expenses remove dollar sign
+      //add value to  the current total
+        const totalIncomes = incomeData.reduce((acc, current) => acc + parseFloat(current.amount.replace('$', '').replace(',' , '')), 0);
+      
+        const balance = totalIncomes - totalExpenses;
+        return parseFloat(balance.toFixed(2))
 
-    useEffect(() => {
+}
+         
+ useEffect(() => {
         getFinances();
     }, []);
 
@@ -41,18 +55,14 @@ const MainFeed: NextPage = () => {
 
         <ArticleCard article={object} />
     */
+    const balance = getBalance(finances)
+      
     return (
-        <>
-            <Text h2>Main  Feed </Text>
-            <h2 className="text-3xl">
-            
-            ${
-               
-               Number(balance).toFixed(2)
-             }
- 
- 
-       </h2>
+        <>  
+            <div >
+            <Text h2>Main  Feed <span style ={{margin:' 0 220px'}}>${getBalance(finances).toFixed(2) } </span> </Text>
+           
+            </div>
             <Text size="$lg" css={{my: "$8"}}>
                 Check out incomes and expenses from here
             </Text>
