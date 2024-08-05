@@ -39,8 +39,8 @@ const editFinance:NextPage = () => {
         return parseFloat(balance.toFixed(2))
 
 }
-    useEffect( () => {
-        async function getFinance() {
+    
+        async function fetchTransactions() {
             const {data, error} = await supabaseClient
                 .from("personalfinance")
                 .select("*")
@@ -53,9 +53,8 @@ const editFinance:NextPage = () => {
             }
         }
         if(typeof id !== "undefined") {
-            getFinance();
-        }
-    }, [id])
+           fetchTransactions
+         }; [id]
     const editFinance = async () =>{
        try {
         const { data, error} = await supabaseClient
@@ -82,7 +81,9 @@ const editFinance:NextPage = () => {
 
     }
 
-
+    useEffect( () => {
+      fetchTransactions }
+      ,[])
 
    // console.log(financeData);
 
@@ -154,7 +155,7 @@ return(
           
           
               
-              ${balance.toFixed(2) }
+              ${getBalance(transactionsData).toFixed(2) }
             
   
       </h2>
